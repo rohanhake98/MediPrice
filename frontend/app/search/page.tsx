@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { ChevronRight, Pill, AlertCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -13,7 +13,7 @@ interface Medicine {
   pack_size: string;
 }
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams?.get("q") || "";
 
@@ -123,5 +123,20 @@ export default function SearchPage() {
         </motion.div>
       )}
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+          <Loader2 className="w-10 h-10 animate-spin mb-4" />
+          <p>Loading search...</p>
+        </div>
+      }
+    >
+      <SearchContent />
+    </Suspense>
   );
 }
